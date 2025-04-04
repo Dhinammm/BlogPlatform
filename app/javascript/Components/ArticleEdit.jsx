@@ -1,65 +1,95 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useHistory } from "react-router-dom";
 import axios from "axios";
-function ArticleEdit(){
-    const rootDiv = document.getElementById("root");
-    const article = JSON.parse(rootDiv.getAttribute("article"));
-    const user = JSON.parse(rootDiv.getAttribute("user"));
+import Home from "./Home"
+import SignInButton from "./SignInButton";
+import SignOutButton from "./SignOutButton";
+function ArticleEdit() {
+    const [article, setArticle] = useState({ title: "", content: "" });
     const [title, setTitle] = useState(article.title);
     const [content, setContent] = useState(article.content);
-    const id= article.id;
-    function titlehandler(event){
-        setTitle(event.target.value);
-    }
+    const { id } = useParams(); 
+    const navigate= useHistory();
+    useEffect(() => {
+        axios.get(`http://localhost:3000/articles/${id}`, { headers: { Accept: "application/json" } })
+            .then(response => {
+                setArticle(response.data.article);
+                setTitle(response.data.article.title);
+                setContent(response.data.article.content);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }, []);
 
-    function contenthandler(event){
-        setContent(event.target.value);
-    }
-    function updatehandler() {
+    function updateHandler() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
         if (!csrfToken) {
             console.error("CSRF token missing");
             return;
         }
-    
-        fetch(`/articles/${article.id}`, {
-            method: "PUT",
-            headers: {
-                "X-CSRF-Token": csrfToken,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({article: { title, content}} )
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Article updated successfully!");
-                window.location.href = `/articles/${article.id}`; 
-            } else {
-                return response.text().then(text => {
-                    window.location.href = `/articles/${article.id}`;
-                    console.error("Update failed:", text);
-                    alert("Failed to update article.");
-                    window.location.href = `/articles/${article.id}`; 
-                });
+
+        axios.put(`/articles/${article.id}`, 
+            { article: { id, title, content } },
+            {
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                    "Content-Type": "application/json",
+                },
             }
+        )
+        .then(response => {
+            alert("Article updated successfully");
+           navigate.push(`/articles/${id}`) ;
         })
-        .catch(error => window.location.href= `/articles/${article.id}`);
+        .catch(error => {
+            alert("Error updating article");
+        });
     }
-    
+
     return (
-        <>
-        <h2>Title</h2>
-        <input type="text" onChange={titlehandler} value={title}/>
-        <h2>Content</h2>
-        <textarea 
-  rows="10" 
-  cols="100" 
-  onChange={contenthandler} 
-  value={content}
-/>
-        <button onClick={updatehandler}>Submit</button>
-        </>
-    )
+        <div className="container mt-4">
+              <Home/>
+              <SignOutButton/>
+            <div className="card shadow-lg p-4">
+                <h2 className="text-center mb-4">Edit Article</h2>
+                
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Title</label>
+                    <input 
+                        type="text" 
+                        className="form-control"
+                        onChange={(e) => setTitle(e.target.value)} 
+                        value={title}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Content</label>
+                    <textarea 
+                        rows="5" 
+                        className="form-control"
+                        onChange={(e) => setContent(e.target.value)} 
+                        value={content}
+                    />
+                </div>
+
+                <div className="d-flex justify-content-end mt-3">
+    <Link to={`/articles/${id}`} className="btn btn-secondary fw-bold px-4 py-2 me-2">
+        Cancel
+    </Link>
+  
+    <button 
+        onClick={updateHandler} 
+        className="btn btn-success fw-bold px-4 py-2"
+    >
+        Update
+    </button>
+</div>
+
+            </div>
+        </div>
+    );
 }
 
-export default ArticleEdit
+export default ArticleEdit;
