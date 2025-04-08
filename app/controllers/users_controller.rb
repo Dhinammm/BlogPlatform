@@ -3,7 +3,12 @@ class UsersController < ApplicationController
         @users = User.all
         respond_to do |format|
             format.html
-            format.json{ render json:{users: @users.as_json(only: [:id, :name]), current_user: current_user}, layout: false}
+            format.json {
+                render json: {
+                    users: @users.as_json(only: [:id, :name]),
+                    current_user: current_user
+                }, layout: false
+            }
         end
     end
 
@@ -12,86 +17,103 @@ class UsersController < ApplicationController
             res = false
             fake = false
             @user = User.find(params[:id])
-            @articles = Article.where("user_id = ?",params[:id])
+            @articles = Article.where("user_id = ?", params[:id])
+
             if current_user != @user
                 fake = true
-            end 
+            end
 
             respond_to do |format|
                 format.html
-                format.json { render json: { articles: @articles.as_json(only: [:id, :title]), user: @user.as_json(only: [:id, :name]),
-                 res: res.as_json, fake: fake.as_json}, layout: false }
+                format.json {
+                    render json: {
+                        articles: @articles.as_json(only: [:id, :title]),
+                        user: @user.as_json(only: [:id, :name]),
+                        res: res.as_json,
+                        fake: fake.as_json
+                    }, layout: false
+                }
             end
         rescue
-            res= true
+            res = true
             respond_to do |format|
                 format.html
-                format.json { render json: { res: res.as_json}, layout: false }
+                format.json {
+                    render json: { res: res.as_json }, layout: false
+                }
             end
         end
     end
 
-    def new 
+    def new
         @user = User.new
     end
 
     def create
         begin
-        @user = User.new(user_params)
-        respond_to do |format|
-            format.html {redirect_to user_path(@user)}
-            format.json { render json: {user_id: @user.as_json(only: [:id])}, layout: false }
-        end
-    rescue
-        res= true
-        respond_to do |format|
-            format.html
-            format.json { render json: { res: res.as_json}, layout: false }
-        end
-    end
-end
-    def destroy
-        begin
-            res =false
-        user = User.find(params[:id])
-        
-        if current_user != user
-            res=true
-        else
-            user.destroy
-        end
-        respond_to do |format|
-            format.html
-            format.json { render json: { res: res.as_json}, layout: false }
-        end
+            @user = User.new(user_params)
+            respond_to do |format|
+                format.html { redirect_to user_path(@user) }
+                format.json {
+                    render json: {
+                        user_id: @user.as_json(only: [:id])
+                    }, layout: false
+                }
+            end
         rescue
-            res= true
+            res = true
             respond_to do |format|
                 format.html
-                format.json { render json: { res: res.as_json}, layout: false }
+                format.json {
+                    render json: { res: res.as_json }, layout: false
+                }
             end
+        end
     end
-end
+
+    def destroy
+        begin
+            res = false
+            user = User.find(params[:id])
+
+            if current_user != user
+                res = true
+            else
+                user.destroy
+            end
+
+            respond_to do |format|
+                format.html
+                format.json {
+                    render json: { res: res.as_json }, layout: false
+                }
+            end
+        rescue
+            res = true
+            respond_to do |format|
+                format.html
+                format.json {
+                    render json: { res: res.as_json }, layout: false
+                }
+            end
+        end
+    end
 
     def not_found
     end
 
     def details
-        if current_user
-            res=true
-        else
-            res=false
-        end
-        puts 55555555555555555555555555555555555555555555555555555555555555
-        puts res
+        res = current_user ? true : false
         respond_to do |format|
-            format.json { render json: { res: res.as_json }, layout: false}   
+            format.json {
+                render json: { res: res.as_json }, layout: false
+            }
         end
-    end
-    private
-    def user_params
-       # params.require(user: [:name, :email, :password])
-       params.require(:user).permit(:name, :email, :password)
     end
 
+    private
+
+    def user_params
+        params.require(:user).permit(:name, :email, :password)
+    end
 end
