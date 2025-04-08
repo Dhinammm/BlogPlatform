@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const history=useHistory();
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
@@ -20,7 +20,7 @@ function Login() {
       })
       .then((response) => {
         alert("Login successful!");
-        window.location.href = "/";
+        history.push(`/articles/${article.id}`);
       })
       .catch((error) => {
         alert("Invalid email or password");

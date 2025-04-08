@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Home from "./Home"
+import { useHistory } from "react-router-dom";
 function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errors, setErrors] = useState([]);
+  const history=useHistory();
 
-  // Get CSRF token from meta tag
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   const handleSubmit = async (e) => {
@@ -28,7 +28,7 @@ function SignUp() {
       );
 
       alert("Account created successfully! ");
-      window.location.href = "/"; // Redirect to homepage after successful sign-up
+      history.push(`/`);
     } catch (error) {
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
@@ -42,7 +42,6 @@ function SignUp() {
     <div className="container mt-5">
       <h2 className="text-center text-primary mb-4">Sign Up</h2>
 
-      {/* Show error messages */}
       {errors.length > 0 && (
         <div className="alert alert-danger">
           <ul>

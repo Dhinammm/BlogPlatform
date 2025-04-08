@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+
+import { useHistory } from "react-router-dom";
 import axios from "axios";
-import Home from "./Home"
+
 
 
 function SignOut(){
+    const history=useHistory();
     function deletehandler()
 {const csrf = document
     .querySelector('meta[name="csrf-token"]')
@@ -12,7 +13,7 @@ function SignOut(){
   axios.defaults.headers["X-CSRF-Token"] = csrf;
 axios.delete(`http://localhost:3000/users/sign_out`)
 .then(response =>
-    window.location.href="/"
+     history.push(`/`)
 )
 }
 
