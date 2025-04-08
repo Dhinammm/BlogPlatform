@@ -4,8 +4,6 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./Home";
 
-
-
 function ArticleShow() {
   const [article, setArticle] = useState([]);
   const [auth, setAuth] = useState(false);
@@ -13,7 +11,7 @@ function ArticleShow() {
   const [comments, setComments] = useState([]);
   const [userNotLogged, setuserNotLogged] = useState(false);
   const [content, setContent] = useState("");
-  const [showFullContent, setShowFullContent] = useState(false); // NEW
+  const [showFullContent, setShowFullContent] = useState(false);
   const { id } = useParams();
   const [currentUser, setcurrentUser] = useState(0);
   const history = useHistory();
@@ -76,13 +74,12 @@ function ArticleShow() {
     }
   }
 
-  const maxLength = 300; // Adjust this to your preferred snippet length
+  const maxLength = 300;
 
   return (
     <div className="container mt-4 p-4 bg-white rounded shadow-lg">
       <h1 className="text-primary text-center mb-3">{article.title}</h1>
 
-      {/* Show More / Show Less Content */}
       <p className="lead">
         {showFullContent || article.content?.length <= maxLength
           ? article.content
@@ -147,7 +144,6 @@ function ArticleShow() {
         </div>
       )}
 
-    
       <div className="mt-3">
         <Link to="/articles" className="btn btn-secondary">
           Back
