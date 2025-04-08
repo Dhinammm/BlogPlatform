@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link, useHistory } from "react-router-dom";
-import axios from "axios";
-import Home from "./Home"
 
+import { useParams, Link, useHistory } from "react-router-dom";
 
 function SignOutButton(){
 

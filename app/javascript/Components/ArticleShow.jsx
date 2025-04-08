@@ -3,8 +3,6 @@ import { useParams, Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./Home";
-import SignInButton from "./SignInButton";
-import SignOutButton from "./SignOutButton";
 
 function ArticleShow() {
   const [article, setArticle] = useState([]);
@@ -17,9 +15,7 @@ function ArticleShow() {
   const { id } = useParams();
   const [currentUser, setcurrentUser] = useState(0);
   const history = useHistory();
-  const csrf = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
+  const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   axios.defaults.headers["X-CSRF-Token"] = csrf;
 
   useEffect(() => {
@@ -55,10 +51,8 @@ function ArticleShow() {
 
   function deleteComments(comment_id) {
     axios
-      .delete(
-        `http://localhost:3000/articles/${article.id}/blog_comments/${comment_id}`
-      )
-      .then(() => (window.location.href = `/articles/${article.id}`));
+      .delete(`http://localhost:3000/articles/${article.id}/blog_comments/${comment_id}`)
+      .then(() => window.location.href = `/articles/${article.id}`);
   }
 
   function contentHandler(event) {
@@ -67,15 +61,12 @@ function ArticleShow() {
 
   function addComment() {
     if (content.trim() !== "") {
-      axios
-        .post(`http://localhost:3000/articles/${article.id}/blog_comments`, {
-          content,
-        })
+      axios.post(`http://localhost:3000/articles/${article.id}/blog_comments`, { content })
         .then(() => {
           alert("Comment posted successfully");
           history.push(`/articles/${article.id}`);
         })
-        .catch((error) => {
+        .catch(error => {
           alert("An error occurred: " + error.message);
         });
     } else {
@@ -83,12 +74,12 @@ function ArticleShow() {
     }
   }
 
-  const maxLength = 300; 
+  const maxLength = 300;
+
   return (
     <div className="container mt-4 p-4 bg-white rounded shadow-lg">
       <h1 className="text-primary text-center mb-3">{article.title}</h1>
 
-     
       <p className="lead">
         {showFullContent || article.content?.length <= maxLength
           ? article.content
@@ -103,10 +94,7 @@ function ArticleShow() {
         </button>
       )}
 
-      <div>
-        <b>Author: </b>
-        <b className="text-info">{user.name}</b>
-      </div>
+      <div><b>Author: </b><b className="text-info">{user.name}</b></div>
       <hr />
 
       {!userNotLogged && (
@@ -156,7 +144,6 @@ function ArticleShow() {
         </div>
       )}
 
-      {!userNotLogged ? <SignOutButton /> : <SignInButton />}
       <div className="mt-3">
         <Link to="/articles" className="btn btn-secondary">
           Back

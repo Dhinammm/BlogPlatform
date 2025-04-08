@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {useNavigate} from 'react-router-dom';
+
 import Home from "./Home"
-import SignInButton from "./SignInButton";
-import SignOutButton from "./SignOutButton";
+
 function ArticleNew() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const navigate = useNavigate();
   const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   axios.defaults.headers["X-CSRF-Token"] = csrf;
 
@@ -19,9 +17,7 @@ function ArticleNew() {
     setContent(event.target.value);
   }
 
-  function Cancel() {
-    navigate("/articles");
-  }
+  
 
   function createhandler() {
     axios

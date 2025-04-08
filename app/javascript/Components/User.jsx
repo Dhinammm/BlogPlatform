@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import Home from "./Home";
-import SignInButton from "./SignInButton";
-import SignOutButton from "./SignOutButton";
+
 function User() {
   const [users, setUsers] = useState([]);
   const [current_user, setCurrentuser] = useState(null);

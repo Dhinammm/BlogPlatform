@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Home from "./Home";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-
+  const history=useHistory();
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
-
   axios.defaults.headers.common["X-CSRF-Token"] = csrfToken;
 
   function handleLogin(event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     axios
       .post("/users/sign_in", {
@@ -22,7 +20,7 @@ function Login() {
       })
       .then((response) => {
         alert("Login successful!");
-        window.location.href = "/";
+        history.push(`/articles/${article.id}`);
       })
       .catch((error) => {
         alert("Invalid email or password");
@@ -35,8 +33,7 @@ function Login() {
         <div className="col-md-6">
           <div className="card shadow-lg p-4">
             <h2 className="text-center text-primary mb-4">Log in</h2>
-
-            <form onSubmit={handleLogin} className="needs-validation">
+            <form onSubmit={handleLogin}>
               <div className="mb-3">
                 <label className="form-label fw-bold">Email</label>
                 <input
@@ -72,12 +69,10 @@ function Login() {
             </form>
 
             <div className="text-center mt-3">
-              <a href="/users/sign_up">Sign up</a> |{" "}
-              <a href="/users/password/new">Forgot password?</a>
+              <Link to="/users/sign_up">Sign up</Link> |{" "}
+              <Link to="/users/password/new">Forgot password?</Link>
             </div>
-          </div>{" "}
-          <Home />
-          <Link to="/">Back</Link>
+          </div>
         </div>
       </div>
 

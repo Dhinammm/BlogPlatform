@@ -12,13 +12,13 @@ function UserShow() {
 
   const csrf = document
     .querySelector('meta[name="csrf-token"]')
-    ?.getAttribute("content");
+    .getAttribute("content");
   axios.defaults.headers["X-CSRF-Token"] = csrf;
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/users/${id}`, {
+        const response = await axios.get(`/users/${id}`, {
           headers: { Accept: "application/json" },
         });
 
@@ -45,8 +45,8 @@ function UserShow() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:3000/users/${id}`);
-      history.push(`http://localhost:3000/users/`);
+      await axios.delete(`/users/${id}`);
+      history.push("/users");
     } catch (error) {
       console.error("Error deleting account:", error);
     }
@@ -94,10 +94,10 @@ function UserShow() {
         </div>
       </div>
 
-      <Link to={`/users/`} className="btn btn-outline-dark mb-2">
+      <Link to="/users" className="btn btn-outline-dark mb-2">
         Back
       </Link>
-      <Link to="/" className="btn btn-outline-dark mb-2">
+      <Link to="/" className="btn btn-outline-dark mb-2 ms-2">
         Home
       </Link>
     </div>

@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Home from "./Home";
+import { useHistory } from "react-router-dom";
 function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errors, setErrors] = useState([]);
+  const history=useHistory();
 
- 
-  const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,12 +18,7 @@ function SignUp() {
       const response = await axios.post(
         "/users",
         {
-          user: {
-            name,
-            email,
-            password,
-            password_confirmation: passwordConfirmation,
-          },
+          user: { name, email, password, password_confirmation: passwordConfirmation },
         },
         {
           headers: {
@@ -35,7 +28,7 @@ function SignUp() {
       );
 
       alert("Account created successfully! ");
-      window.location.href = "/"; 
+      history.push(`/`);
     } catch (error) {
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
@@ -49,7 +42,6 @@ function SignUp() {
     <div className="container mt-5">
       <h2 className="text-center text-primary mb-4">Sign Up</h2>
 
-     
       {errors.length > 0 && (
         <div className="alert alert-danger">
           <ul>
